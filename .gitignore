@@ -1,2 +1,5 @@
 mentahealth_chatbot
 .DS_Store
+.env
+.venv
+db
