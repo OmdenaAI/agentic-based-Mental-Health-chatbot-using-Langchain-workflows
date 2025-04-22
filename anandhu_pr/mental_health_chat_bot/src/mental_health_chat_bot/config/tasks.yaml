@@ -1,0 +1,67 @@
+emotion_detection_task:
+  description: >
+    Analyze the user's input: "{user_input}"
+    Determine the primary emotional state (e.g., sadness, anxiety, happiness, neutral) and summarize the emotional context.
+  expected_output: >
+    A summary of the user's emotional state, e.g., "The user appears to be feeling neutral."
+  output_key: emotion_summary
+  agent: emotion_detector
+
+safety_check_task:
+  description: >
+    Review the user's input: "{user_input}"
+    Check for red flags like self-harm or suicidal thoughts. If detected, provide an empathetic response and escalate. If none, confirm safety.
+  expected_output: >
+    Either: "No red flags detected." or "Crisis detected: [details]. Escalating with care."
+  output_key: safety_result
+  agent: safety_agent
+  context:
+    - emotion_detection_task
+
+rag_retrieval_task:
+  description: >
+    Retrieve relevant mental health tips from the text corpus based on the user's emotional state provided by the emotion detection task.
+  expected_output: >
+    A list of relevant mental health tips based on the user's emotional state, e.g., "Reach out to others: Connect with friends, family, or support groups to foster relationships."
+  output_key: retrieved_tips
+  agent: rag_retriever
+  context:
+    - emotion_detection_task
+
+rag_reading_task:
+  description: >
+    Summarize the mental health tips retrieved from the text corpus to provide concise guidance tailored to the user's emotional state.
+  expected_output: >
+    A concise summary of the retrieved mental health tips tailored to the user's emotional state, e.g., "Connecting with others and volunteering can help reduce loneliness."
+  output_key: summarized_tips
+  agent: rag_reader
+  context:
+    - emotion_detection_task
+    - rag_retrieval_task
+
+suggestion_task:
+  description: >
+    Provide practical, empathetic suggestions to support the user's mental well-being based on their emotional state and retrieved knowledge.
+  expected_output: >
+    A list of 2-3 practical, empathetic suggestions to support the user's mental well-being, e.g., "Try reaching out to a friend or family member to connect."
+  output_key: suggestions
+  agent: suggestion_agent
+  context:
+    - emotion_detection_task
+    - safety_check_task
+    - rag_retrieval_task
+    - rag_reading_task
+
+orchestrate_task:
+  description: >
+    Coordinate all tasks to produce a cohesive response for the user's input: "{user_input}", prioritizing safety if a crisis is detected.
+  expected_output: >
+    A final response, e.g., "You seem neutral—try a quick stretch or deep breathing to boost your mood!"
+  output_key: final_response
+  agent: orchestrator
+  context:
+    - emotion_detection_task
+    - safety_check_task
+    - rag_retrieval_task
+    - rag_reading_task
+    - suggestion_task

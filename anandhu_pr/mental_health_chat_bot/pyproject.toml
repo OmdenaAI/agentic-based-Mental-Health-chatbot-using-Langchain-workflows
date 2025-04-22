@@ -1,0 +1,55 @@
+[project]
+name = "mental_health_chat_bot"
+version = "0.1.0"
+description = "mental_health_chat_bot using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai-tools>=0.40.1",
+    "crewai[tools]>=0.114.0,<1.0.0",
+]
+
+[project.scripts]
+mental_health_chat_bot = "mental_health_chat_bot.main:run"
+run_crew = "mental_health_chat_bot.main:run"
+train = "mental_health_chat_bot.main:train"
+replay = "mental_health_chat_bot.main:replay"
+test = "mental_health_chat_bot.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
+# entrypoint = "mental_health_chat_bot.main:run"
+# src = "src"       # <-- important line!
+
+
+
+
+
+
+# [project]
+# name = "mental_health_chat_bot"
+# version = "0.1.0"
+# description = "mental_health_chat_bot using crewAI"
+# authors = [{ name = "Your Name", email = "you@example.com" }]
+# requires-python = ">=3.10,<3.13"
+# dependencies = [
+#     "crewai[tools]>=0.114.0,<1.0.0"
+# ]
+
+# [project.scripts]
+# mental_health_chat_bot = "mental_health_chat_bot.main:run"
+# run_crew = "mental_health_chat_bot.main:run"
+# train = "mental_health_chat_bot.main:train"
+# replay = "mental_health_chat_bot.main:replay"
+# test = "mental_health_chat_bot.main:test"
+
+# [build-system]
+# requires = ["hatchling"]
+# build-backend = "hatchling.build"
+
+# [tool.crewai]
+# type = "crew"

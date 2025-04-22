@@ -1,0 +1,1 @@
+- Maintain routines: Keeping a regular schedule can provide a sense of normalcy.
