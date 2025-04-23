@@ -1,1 +1,1 @@
-The user appears to be feeling neutral.  The input "hi" is a simple greeting and lacks emotional content.  There is no indication of sadness, anxiety, or happiness.
+The user appears to be feeling neutral.

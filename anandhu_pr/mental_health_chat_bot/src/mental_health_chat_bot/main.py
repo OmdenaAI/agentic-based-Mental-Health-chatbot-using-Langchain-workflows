@@ -7,7 +7,7 @@ import datetime
 
 # Load environment variables
 load_dotenv()
-print("GOOGLE_API_KEY:", os.getenv("GOOGLE_API_KEY"))  # Debug print
+# print("GOOGLE_API_KEY:", os.getenv("GOOGLE_API_KEY"))  # Debug print
 
 def log_conversation(message: str):
     """Append message to conversation log with timestamp."""
