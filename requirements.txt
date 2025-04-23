@@ -1,0 +1,5 @@
+#pip install crewai
+#brew install postgresql
+#pip install crewai_tools
+#pip install langchain_huggingface
+#pip install transformers
