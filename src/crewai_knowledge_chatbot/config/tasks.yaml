@@ -1,0 +1,10 @@
+chat_task:
+  description: >
+    Use the conversation history to build your response to the user:
+
+    {history}
+
+    Respond to the user's message: {user_message}",
+  expected_output: >
+    Your output should be a relevant, accurate, and engaging response that directly addresses the user's query or continues the conversation logically.
+  agent: assistant
