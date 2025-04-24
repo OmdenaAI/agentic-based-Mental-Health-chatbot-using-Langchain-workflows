@@ -1,0 +1,14 @@
+llama-index
+autogen
+pandas
+pypdf
+python-dotenv
+google-search-results
+groq
+google-generativeai
+chromadb
+llama-index-vector-stores-chroma
+streamlit
+llama-index-llms-gemini
+llama-index-llms-groq
+llama-index-embeddings-huggingface
