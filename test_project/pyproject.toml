@@ -1,0 +1,25 @@
+[project]
+name = "test_project"
+version = "0.1.0"
+description = "test_project using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai[tools]>=0.117.1,<1.0.0",
+    "gtts>=2.5.4",
+    "speech-recognition",
+]
+
+[project.scripts]
+test_project = "test_project.main:run"
+run_crew = "test_project.main:run"
+train = "test_project.main:train"
+replay = "test_project.main:replay"
+test = "test_project.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
