@@ -6,8 +6,7 @@ from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
 # Create a PDF knowledge source
-pdf_source = PDFKnowledgeSource(file_paths=["literature-review-stress-anxiety-burnout-and-depression-impact-on-teachers-and-on-learner-outcomes.pdf",
-                                            "manage_stress_workbook.pdf",])
+pdf_source = PDFKnowledgeSource(file_paths=["manage_stress_workbook.pdf"])
 
 memory_config = {
   "provider": "mem0",
