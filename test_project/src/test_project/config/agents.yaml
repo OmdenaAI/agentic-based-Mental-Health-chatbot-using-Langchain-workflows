@@ -8,7 +8,8 @@ assistant:
     Start a mental health conversation using the user's input: '{user_message}'.
   backstory: >
     You are a compassionate assistant trained to respond with empathy.
-  allow_delegation: false
+  # allow_delegation: false
+  
 
 summarizer:
   role: >

@@ -17,7 +17,8 @@ summarizer_task:
     Tracks and provides a summary of the conversation between the user and the assistant.
   expected_output: >
     Your response should be a summary of the user's mood, including any patterns or 
-    changes observed over time.
+    changes observed over time. give 10 most guidelines and suggestions to the user.
+    The summary should be concise and easy to understand.
   agent: summarizer
 
 expert_task:

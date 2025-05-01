@@ -37,7 +37,7 @@ class TestProject():
             config=self.agents_config['assistant'],
             memory=True,
             memory_config=memory_config,
-            verbose=False,
+            verbose=True,
 
         )
         
@@ -57,7 +57,7 @@ class TestProject():
             config=self.agents_config['expert'],
             memory=True,
             memory_config=memory_config,
-            verbose=False,
+            verbose=True,
         )
 
     
@@ -74,8 +74,28 @@ class TestProject():
     def summarizer_task(self) -> Task:
         return Task(
             config=self.tasks_config["summarizer_task"],
+            output_keys=["summary.json"],
+            callback=self.save_summary_output
         )
-        
+
+    def save_summary_output(self, output):
+        import json
+        try:
+            if not output:
+                raise ValueError("Output is empty or invalid.")
+
+            if hasattr(output, 'to_dict'):
+                serializable_output = output.to_dict()
+            elif isinstance(output, dict):
+                serializable_output = output
+            else:
+                serializable_output = {"result": str(output)}
+
+            with open("summary.json", "w") as f:
+                json.dump(serializable_output, f, indent=4)
+        except Exception as e:
+            print(f"Error saving summary output: {e}")
+
     @task
     def expert_task(self) -> Task:
         return Task(
