@@ -1,1 +1,0 @@
-The user appears to be feeling neutral.

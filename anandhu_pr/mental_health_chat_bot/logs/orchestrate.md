@@ -1,1 +1,0 @@
-You seem neutral, so let's proactively boost your mood! Try a quick chat with a friend, a short mindful breathing exercise, or engage in a relaxing activity you enjoy.
