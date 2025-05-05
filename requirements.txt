@@ -12,3 +12,10 @@ streamlit
 llama-index-llms-gemini
 llama-index-llms-groq
 llama-index-embeddings-huggingface
+fastapi
+uvicorn
+gtts
+SpeechRecognition
+pydub
+pyttsx3
+pyaudio
