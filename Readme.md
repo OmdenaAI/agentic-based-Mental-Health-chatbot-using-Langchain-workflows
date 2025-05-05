@@ -1,43 +1,90 @@
-#mental Health chatbot project
 
-## Setting Up the Environment
+# 🧠 Mental Health Chatbot
 
-To set up the environment for the LangChain-based agentic project, follow these steps:
+An AI-powered voice + text chatbot built with **FastAPI**, **Streamlit**, and **Gemini LLM** to provide helpful mental health guidance. It also logs all conversations to a `chat_log.json` file.
 
-### Prerequisites
-- Python 3.8 or higher
-- `pip` (Python package installer)
+---
 
-### Steps
+## 💡 Features
 
-1. **Clone the Repository**:
-    ```bash
-    git clone https://github.com/your-repo/gentic-based-Mental-Health-chatbot-using-Langchain-workflows.git
-    cd gentic-based-Mental-Health-chatbot-using-Langchain-workflows
-    ```
+- 🗣️ Speech-to-text and text-to-speech support by pyaudio
+- 💬 Chat interface using Streamlit
+- 🧠 Answers powered by Google's Gemini model (`models/gemini-1.5-flash`)
+- 📝 Logs all interactions in `chat_log.json`
+- 🎥 Comes with a demo video to showcase capabilities
 
-2. **Create a Virtual Environment**:
-    ```bash
-    python -m venv env
-    source env/bin/activate  # On Windows, use `env\Scripts\activate`
-    ```
+---
 
-3. **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## 🚀 How to Run
 
-4. **Run the Application**:
-    ```bash
-    python main.py
-    ```
+### 1. Clone the Repo
 
-5. **Deactivate the Environment**:
-    When you're done, deactivate the virtual environment:
-    ```bash
-    deactivate
-    ```
+```bash
+git clone <your-repo-url> 
+git clone --branch <branch-name> <your-repo-url>
+cd Omdena_Mental-Health-Chatbot
+```
 
-### Notes
-- Ensure all dependencies in `requirements.txt` are installed properly.
-- Update the `requirements.txt` file if additional packages are needed.
+### 2. Create a Virtual Environment (Optional but Recommended)
+
+```bash
+conda create -n mentalbot python=3.10
+conda activate mentalbot
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Make sure `ffmpeg` is installed and available in your PATH.
+
+### 4. Start the Backend (FastAPI)
+
+```bash
+uvicorn main:app --reload
+```
+
+By default, this runs on `http://127.0.0.1:8000`
+
+### 5. Start the Frontend (Streamlit)
+
+In another terminal:
+
+```bash
+streamlit run app.py
+```
+
+This launches the chatbot UI in your browser.
+
+---
+
+## 🎤 Example Questions
+
+Try asking the chatbot:
+
+- "I'm feeling overwhelmed, what should I do?"
+- "Suggest ways to reduce anxiety."
+- "What is mindfulness?"
+- "I can't sleep properly. Can you help?"
+- "What are symptoms of burnout?"
+
+---
+
+## 📂 Logs
+
+Every conversation is stored in:
+
+```
+chat_log.json
+```
+
+You can analyze it later for feedback or improvement tracking.
+
+
+
+## 🙌 Acknowledgments
+
+Built as part of the Omdena Mental Health Initiative 💚  
+Powered by LLMs, FastAPI, and Streamlit.
