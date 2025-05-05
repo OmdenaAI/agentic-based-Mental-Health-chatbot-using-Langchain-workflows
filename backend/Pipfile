@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = {extras = ["standard"], version = "*"}
+langgraph = "*"
+langchain-core = "*"
+langchain-community = "*"
+langchain = "*"
+huggingface-hub = "*"
+sentence-transformers = "*"
+faiss-cpu = "1.8.0"
+langchain-google-genai = "*"
+pandas = "*"
+kagglehub = "*"
+langchain-huggingface = "*"
+numpy = "<2.0"
+torch = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.11"
