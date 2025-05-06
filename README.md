@@ -40,7 +40,7 @@
 
 ### 7. Define environment variables
 -    first,  create `.env file`
--    second, define `GOOGLE_API_KEY` in the `.env` file e.g `GOOFLE_API_KEY=hfdihelncaovwsbvbusvs`
+-    second, define `GOOGLE_API_KEY` in the `.env` file e.g `GOOGLE_API_KEY=hfdihelncaovwsbvbusvs`
     
 
 ### 8. Run FastAPI
