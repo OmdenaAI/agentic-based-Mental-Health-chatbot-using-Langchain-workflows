@@ -18,6 +18,11 @@ kagglehub = "*"
 langchain-huggingface = "*"
 numpy = "<2.0"
 torch = "*"
+kokoro = "*"
+soundfile = "*"
+openai-whisper = {git = "https://github.com/openai/whisper.git"}
+ffmpeg-python = "*"
+gtts = "*"
 
 [dev-packages]
 ipykernel = "*"

@@ -105,3 +105,12 @@ class GraphState(BaseModel):
     query: str 
     docs: list = []
     next: str
+
+
+class TTSInput(BaseModel):
+    text: str
+
+
+
+
+
