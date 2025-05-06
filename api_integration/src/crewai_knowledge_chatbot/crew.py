@@ -9,10 +9,10 @@ from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 pdf_source = PDFKnowledgeSource(file_paths=["literature-review-stress-anxiety-burnout-and-depression-impact-on-teachers-and-on-learner-outcomes.pdf",
                                             "manage_stress_workbook.pdf",])
 
-llm = LLM(
-    model="gemini/gemini-1.5-pro-latest",
-    temperature=0.0
-) 
+#llm = LLM(
+#    model="gemini/gemini-1.5-pro-latest",
+#    temperature=0.0
+#) 
 
 memory_config = {
   "provider": "mem0",
@@ -29,6 +29,14 @@ class CrewaiKnowledgeChatbot():
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
+    # Define a constructor to accept the user_id
+    def __init__(self, user_id="User"):
+        self.user_id = user_id
+        self.memory_config = {
+            "provider": "mem0",
+            "config": {"user_id": self.user_id},
+        }
+
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
@@ -38,7 +46,7 @@ class CrewaiKnowledgeChatbot():
             memory=True,
             memory_config=memory_config,
             verbose=True,
-            llm=llm,
+            #llm=llm,
         )
         
     @agent
@@ -48,7 +56,7 @@ class CrewaiKnowledgeChatbot():
             memory=True,
             memory_config=memory_config,
             verbose=True,
-            llm=llm,
+            #llm=llm,
         )
     
     @agent  
@@ -58,7 +66,7 @@ class CrewaiKnowledgeChatbot():
             memory=True,
             memory_config=memory_config,
             verbose=True,
-            llm=llm,
+            #llm=llm,
         )
 
     
