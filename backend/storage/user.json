@@ -1,0 +1,12 @@
+[
+  {
+    "messages": [],
+    "age": 50,
+    "gender": "female",
+    "language": "string",
+    "emotion": "stress",
+    "query": "I am feeling overwhelmed and stressed at work due to working with children which can be naughty at times",
+    "docs": [],
+    "next": "string"
+  }
+]
