@@ -10,8 +10,22 @@ from models import GraphState
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.vectorstores import FAISS
-from models import GraphState, SentenceTransformers
+from models import GraphState, SentenceTransformers, TTSInput
 from utils import build_lang_graph, store_user_data, create_faiss_db_from_document
+from fastapi import FastAPI, UploadFile, HTTPException, File
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel
+import soundfile as sf
+import numpy as np
+import uuid
+from kokoro import KPipeline
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+import tempfile
+import whisper
+import io
+import numpy as np
+
 
 
 logging.basicConfig(logging=logging.INFO)
@@ -22,6 +36,13 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "" #for cuda devices default to cpu
 torch.cuda.is_available = lambda: False
 
 app = FastAPI()
+storage_path = os.path.join(os.path.dirname(__file__), "storage")
+app.mount("/storage", StaticFiles(directory=storage_path), name="storage")
+pipeline = KPipeline(lang_code='a')
+
+
+storage_path =Path(os.getcwd()) / 'storage' 
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -90,3 +111,59 @@ async def create_faiss_db(
         True if the function runs as expected, False if not
     """
     return create_faiss_db_from_document(documents, model_name.value)
+
+
+
+
+@app.post("/tts")
+def generate_speech(data: TTSInput):
+
+    logger.info('#######')
+    logger.info('#######')
+    logger.info('#######')
+    logger.info('#######')
+    logger.info('#######')
+    logger.info(f"{data.text}")
+    audio_chunks = []
+
+    for _, _, audio in pipeline(data.text, voice="af_heart"):
+        audio_chunks.append(audio)
+
+    if not audio_chunks:
+        raise HTTPException(status_code=500, detail="No audio generated")
+
+    audio = np.concatenate(audio_chunks)
+    file_id = uuid.uuid4().hex
+    filename = f"{storage_path}/{file_id}.wav"
+    sf.write(filename, audio, 24000)
+
+    return {'id': file_id}
+
+
+
+
+@app.post('/store/audio')
+async def store_user_audio(audio: UploadFile=File(...)):
+    """
+        Stores the audio from the user to a file in the backend and returns text to the frontend
+    """
+
+
+    # storing audio
+    try:
+        os.makedirs("storage", exist_ok=True)
+        filepath = storage_path / audio.filename
+        print(f"filepath: {filepath}")
+        with open(filepath, "wb") as f:
+            f.write(await audio.read())
+        
+        # Transcribe
+        whisper_model = whisper.load_model("base")
+        result = whisper_model.transcribe(str(filepath))
+        print(f"text from whishper:{result['text']}")
+        return {"text_from_audio": result["text"]}
+
+    except Exception as e:
+        print("Exception occurred:", e)
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
