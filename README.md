@@ -34,15 +34,21 @@
     pipenv install
 
 
-### 6 Initiate the virtual environment
+### 6. Initiate the virtual environment
     pipenv shell
 
-### 7. Run FastAPI
+
+### 7. Define environment variables
+-    first,  create `.env file`
+-    second, define `GOOGLE_API_KEY` in the `.env` file e.g `GOOFLE_API_KEY=hfdihelncaovwsbvbusvs`
+    
+
+### 8. Run FastAPI
     fastapi dev main.py
 
 
 
-### 8. To view Swagger UI
+### 9. To view Swagger UI
     http://localhost:8000/docs
     
 You should see something like this below
