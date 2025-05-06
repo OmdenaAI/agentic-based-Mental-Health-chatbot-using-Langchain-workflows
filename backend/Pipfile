@@ -23,6 +23,7 @@ soundfile = "*"
 openai-whisper = {git = "https://github.com/openai/whisper.git"}
 ffmpeg-python = "*"
 gtts = "*"
+python-multipart = "*"
 
 [dev-packages]
 ipykernel = "*"
