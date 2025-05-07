@@ -8,23 +8,30 @@ chat_task:
 
     Listen to the user and respond empathetically to: '{user_message}'
   expected_output: >
-    Your response should be a empathetic, relevant, accurate, and engaging. 
-    It directly addresses the {user_message} or continue the conversation logically.
+    Your response should be a empathetic, relevant, accurate, engaging and short. 
+    It directly addresses the {user_message} if you don't have answer to the question continue the conversation logically.
   agent: assistant
 
-summarizer_task:
-  description: >
-    Tracks and provides a summary of the conversation between the user and the assistant.
-  expected_output: >
-    Your response should be a summary of the user's mood, including any patterns or 
-    changes observed over time.
-  agent: summarizer
+# Rag_task:
+#   description: >
+#     Perform semantic search from uploaded documents using context and provide responses.
+#   expected_output: >
+#     You should check the given pdf details and respond with the information in the given knowledge source
+#   agent: rag_agent
 
-expert_task:
-  description: >
-    Provide fact-based mental health guidance based on {user_message} 
-    using trusted documents and web data.
-  expected_output: >
-    Your response should be a clear, compassionate, and informative answer to the {user_message}.
-    It should include relevant information from reputable sources.
-  agent: expert
+# summarizer_task:
+#   description: >
+#     Tracks and provides a summary of the conversation between the user and the assistant.
+#   expected_output: >
+#     Your response should be a summary of the user's mood, including any patterns or 
+#     changes observed over time.
+#   agent: summarizer
+
+# expert_task:
+#   description: >
+#     Provide fact-based mental health guidance based on {user_message} 
+#     using trusted documents and web data.
+#   expected_output: >
+#     Your response should be a clear, compassionate, and informative answer to the {user_message}.
+#     It should include relevant information from reputable sources.
+#   agent: expert
