@@ -1,0 +1,34 @@
+# ✅ Python bytecode & compiled files
+__pycache__/
+*.py[cod]
+*.so
+
+# ✅ Virtual environments
+.venv/
+venv/
+env/
+crew_env_312/
+
+# ✅ Environment variables & secrets
+.env
+smart-pattern-438903-m3-d0fbd352a7db.json
+
+# ✅ Logs & debug outputs
+logs/
+*.log
+
+# ✅ Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# ✅ IDE/editor/project files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ✅ Dependency locks
+poetry.lock
+uv.lock
+
+# ✅ Models, embeddings & index files
+*.pkl
+*.faiss
