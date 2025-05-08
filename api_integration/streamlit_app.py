@@ -180,7 +180,7 @@ def collect_user_info():
         progress += 25
     if age is not None and age > 0:
         progress += 25
-    if gender != "Prefer not to say":
+    if gender != "":
         progress += 25
     if occupation.strip() != "":
         progress += 25

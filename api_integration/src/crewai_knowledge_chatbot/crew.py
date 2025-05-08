@@ -9,10 +9,10 @@ from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 pdf_source = PDFKnowledgeSource(file_paths=["literature-review-stress-anxiety-burnout-and-depression-impact-on-teachers-and-on-learner-outcomes.pdf",
                                             "manage_stress_workbook.pdf",])
 
-#llm = LLM(
-#    model="gemini/gemini-1.5-pro-latest",
-#    temperature=0.0
-#) 
+# llm = LLM(
+#     model="gemini/gemini-1.5-pro-latest",
+#     temperature=0.0
+# ) 
 
 memory_config = {
   "provider": "mem0",
@@ -46,29 +46,28 @@ class CrewaiKnowledgeChatbot():
             memory=True,
             memory_config=memory_config,
             verbose=True,
-            #llm=llm,
+            # llm=llm,
         )
         
-    @agent
-    def summarizer(self) -> Agent:
-        return Agent(
-            config=self.agents_config['summarizer'],
-            memory=True,
-            memory_config=memory_config,
-            verbose=True,
-            #llm=llm,
-        )
+    # @agent
+    # def rag_agent(self) -> Agent:
+    #     return Agent(
+    #         config=self.agents_config['rag_agent'],
+    #         memory=True,
+    #         memory_config=memory_config,
+    #         verbose=True,
+    #         # llm=llm,
+    #     )
     
-    @agent  
-    def expert(self) -> Agent:
-        return Agent(
-            config=self.agents_config['expert'],
-            memory=True,
-            memory_config=memory_config,
-            verbose=True,
-            #llm=llm,
-        )
-
+    # @agent  
+    # def expert(self) -> Agent:
+    #     return Agent(
+    #         config=self.agents_config['expert'],
+    #         memory=True,
+    #         memory_config=memory_config,
+    #         verbose=True,
+    #         # llm=llm,
+    #     )
     
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
@@ -79,17 +78,17 @@ class CrewaiKnowledgeChatbot():
             config=self.tasks_config["chat_task"],
         )
     
-    @task
-    def summarizer_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["summarizer_task"],
-        )
+    # @task
+    # def Rag_task(self) -> Task:
+    #     return Task(
+    #         config=self.tasks_config["Rag_task"],
+    #     )
         
-    @task
-    def expert_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["expert_task"],
-        )
+    # @task
+    # def expert_task(self) -> Task:
+    #     return Task(
+    #         config=self.tasks_config["expert_task"],
+    #     )
 
     @crew
     def crew(self) -> Crew:
