@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.5"
+  }
+}

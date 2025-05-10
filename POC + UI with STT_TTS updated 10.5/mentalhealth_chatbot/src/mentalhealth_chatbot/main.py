@@ -30,3 +30,10 @@ def get_bot_response(user_input, conversation_history, context=None):
     log_conversation(f"You: {user_input}")
     log_conversation(f"Bot: {result}")
     return result, conversation_history
+
+
+def get_crew_response(user_input, history=None):
+    inputs = {"user_input": user_input}
+    crew = MentalHealthChatbotCrew()
+    result = crew.crew().kickoff(inputs=inputs)
+    return result

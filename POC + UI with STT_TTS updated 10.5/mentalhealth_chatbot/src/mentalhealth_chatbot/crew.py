@@ -3,18 +3,44 @@ from crewai.project import CrewBase, agent, crew, task
 from mentalhealth_chatbot.tools.custom_rag_tool import CustomRAGTool
 from dotenv import load_dotenv
 import os
+#from langchain_google_genai import ChatGoogleGenerativeAI
+import os
+
+
 
 # ✅ Load environment variables
 load_dotenv()
+"""llm = ChatGoogleGenerativeAI(
+    model=os.getenv("MODEL"),
+    google_api_key=os.getenv("GOOGLE_API_KEY")
+)
+"""
+"""llm = LLM(
+    provider="google",  # ✅ Use 'google' for Gemini public API
+    model=os.getenv("MODEL"),  # or "gemini-1.5-flash", "gemini-2.0-flash" if supported by API key
+    config={
+        "api_key": os.getenv("GOOGLE_API_KEY")  # ✅ No service account needed
+    }
+)"""
+"""llm = LLM(
+    model="openai/gpt-4",  # or any other model listed on the site
+    temperature=0.7
+)
+"""
+llm = LLM(
+    model="gemini/gemini-2.0-flash",  # or any other model listed on the site
+    temperature=0.7
+)
 
 # ✅ Set Vertex AI credentials
+"""
 google_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 if not google_credentials or not os.path.exists(google_credentials):
     raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not found or invalid")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_credentials
-
+"""
 # ✅ Define the Vertex AI LLM
-llm = LLM(
+"""llm = LLM(
     model="gemini-1.5-flash",  # Model name for Vertex Gemini
     provider="vertexai",
     config={
@@ -22,7 +48,16 @@ llm = LLM(
         "location": "us-central1"
     }
 )
+"""
+"""
+from crewai import LLM
 
+llm = LLM(
+    model="ollama/mistral",
+    provider="ollama",
+    config={"base_url": "http://localhost:11434"}
+)
+"""
 # ✅ Initialize the custom RAG tool
 rag_tool = CustomRAGTool()
 

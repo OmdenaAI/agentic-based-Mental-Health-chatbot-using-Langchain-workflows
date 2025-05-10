@@ -3,7 +3,11 @@ import streamlit as st
 from crewai.tools import BaseTool
 from langchain_community.document_loaders import TextLoader, PyPDFLoader, CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_google_vertexai import VertexAIEmbeddings  # ✅ Vertex AI version
+#from langchain_google_vertexai import VertexAIEmbeddings  # ✅ Vertex AI version
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+
+
 from langchain_community.vectorstores import FAISS
 from typing import Any
 
@@ -47,8 +51,8 @@ class CustomRAGTool(BaseTool):
             chunk_overlap=20
         )
         chunks = text_splitter.split_documents(documents)
-
-        embeddings = VertexAIEmbeddings()  # ✅ Uses GOOGLE_APPLICATION_CREDENTIALS
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        #embeddings = VertexAIEmbeddings()  # ✅ Uses GOOGLE_APPLICATION_CREDENTIALS
         vector_store = FAISS.from_documents(chunks, embeddings)
         return vector_store
 

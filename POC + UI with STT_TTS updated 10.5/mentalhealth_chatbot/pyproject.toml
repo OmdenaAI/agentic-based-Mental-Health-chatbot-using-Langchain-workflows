@@ -15,8 +15,14 @@ dependencies = [
     "pyaudio",
     "streamlit-webrtc",
     "google-cloud-speech",
-    "langchain-google-vertexai"
-
+    "langchain-google-vertexai",
+    "fastapi",
+    "uvicorn",
+    "openai-whisper",
+    "ffmpeg-python",
+    "huggingface-hub",
+    "python-multipart",
+    "pydub"
 ]
 
 [project.scripts]
