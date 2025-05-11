@@ -112,5 +112,10 @@ class TTSInput(BaseModel):
 
 
 
+class FormData(BaseModel): 
+    anxietyGroup: str 
+    depressionGroup: str
+    stressGroup: str
+    adhdGroup: str
 
 
