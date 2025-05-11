@@ -10,6 +10,7 @@ from torch import device
 
 from torch import embedding
 from base_context import base_context
+from storage.assessment_form import assement_context
 from langgraph.graph import StateGraph
 
 from langchain_core.messages import AIMessage
@@ -286,9 +287,77 @@ def generate_response(state: GraphState) -> GraphState:
 
     # initialize Prompt
     prompt = (
-        f"User (Age: {state.age}, Gender: {state.gender}, Emotion: {state.emotion}): {state.query}\n"
-        f"{base_context}. Generate a response like a message conversation between two friends of at most two sentences based on all the instructions in the base context with the information in {state.docs}."
+        f"User (Age: {state.age}, Gender: {state.gender}): {state.query}\n"
+        f"{base_context}. Generate a response like a message conversation between two friends of at most two sentences based on all the instructions with the information in {state.docs}. Tell them what they are experiencing based on {assement_context}"
         f"The response must incorporate relevant suggestions from the retrieved documents, especially from the mental health dataset, when applicable."
+    )
+
+    # Add Language capabilities
+    language = state.language
+    if language.lower() != 'english':
+        prompt += f"Translate the final answer to {language}."
+
+    # invoke llm
+    try:
+        # Invoke the LLM with the prompt
+        response = llm.invoke(prompt)
+        reply = response.content if hasattr(response, "content") else response
+
+        # Check if the reply contains any meaningful content
+        if reply.strip():  # strip() removes leading and trailing whitespace
+            state.messages.append(AIMessage(content=reply))
+            logger.info("Generated a valid response.")
+        else:
+            # Log and provide a fallback for empty or whitespace-only response
+            logger.warning("Generated an empty or whitespace-only response.")
+            reply = "I'm sorry, I couldn't generate a response. Please try again."
+            state.messages.append(AIMessage(content=reply))
+    except Exception as e:
+        # Handle and raise exceptions
+        logger.error(f"Error generating response: {e}")
+        raise e  # Re-raise the exception after logging it
+
+    # Check if the response contains any relevant terms and update the next key in state based on this
+    if any(term in reply.lower() for term in ["stress", "focus", "overwhelmed, adhd, anxious, anxiety, depression"]):
+        state.next = "END" 
+    else:
+        state.next = "RewriteReply"
+
+    # handling rewrite reply
+    if state.next== "END": 
+        return state
+    
+    else:
+        state = rewrite_reply(state, llm)
+        return state
+    
+
+
+
+def generate_assessment_response(state: GraphState) -> GraphState:
+    """
+    Generates a response from the LLM based on user input and retrieved documents.
+
+    Constructs a prompt using the user's demographic and emotional state, along with the 
+    base context and retrieved documents. Sends the prompt to the LLM, processes the 
+    response, and updates the conversation state with the reply. Also determines the 
+    relevance of the response content to guide the next step in the flow.
+
+    Args:
+        state (GraphState): The current state containing user input, context, and retrieved docs.
+
+    Returns:
+        GraphState: The updated state including the generated message and next flow decision.
+    """
+
+    # initialize LLM
+    llm = initialize_LLM(google_api_key=GOOGLE_API_KEY)
+
+    # initialize Prompt
+    prompt = (
+        f"Using the information in {assement_context}. Generate a response that tells the user what they are experiencing"
+        f"The user must be experiencing one or more out of the following mental health challenges: Stress, ADHD, Anxiety and or Depression"
+        f"Tell the user something like, Hi there! Based on your assessment, I notice you've been experiencing some anxiety and stress lately. Would you like to talk about what's been on your mind?"
     )
 
     # Add Language capabilities
@@ -353,6 +422,40 @@ def build_lang_graph():
     # Add nodes to the workflow
     workflow.add_node("RetrieveRelevantDocs", RunnableLambda(retrieve_relevant_docs))
     workflow.add_node("SystemRepliesGenerator", RunnableLambda(generate_response))
+
+    # Define the flow of execution
+    workflow.set_entry_point("RetrieveRelevantDocs")
+    workflow.add_edge("RetrieveRelevantDocs", "SystemRepliesGenerator")
+
+    # Compile the workflow into an executable app
+    app = workflow.compile()
+
+    return app
+
+
+
+
+def build_assessment_lang_graph():
+    """
+    Builds and compiles a LangChain workflow (LangGraph) for document retrieval and response generation.
+    
+    This function creates a graph with two nodes:
+    1. "RetrieveRelevantDocs" - Retrieves relevant documents.
+    2. "SystemRepliesGenerator" - Generates a response based on the retrieved documents.
+
+    The nodes are connected by edges to form a linear workflow. The workflow starts from "RetrieveRelevantDocs" 
+    and proceeds to "SystemRepliesGenerator".
+    
+    Returns:
+        app (StateGraph): A compiled workflow ready for execution.
+    """
+    
+    # Initialize the LangChain StateGraph
+    workflow = StateGraph(GraphState)
+
+    # Add nodes to the workflow
+    workflow.add_node("RetrieveRelevantDocs", RunnableLambda(retrieve_relevant_docs))
+    workflow.add_node("SystemRepliesGenerator", RunnableLambda(generate_assessment_response))
 
     # Define the flow of execution
     workflow.set_entry_point("RetrieveRelevantDocs")

@@ -10,8 +10,8 @@ from models import GraphState
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.vectorstores import FAISS
-from models import GraphState, SentenceTransformers, TTSInput
-from utils import build_lang_graph, store_user_data, create_faiss_db_from_document
+from models import GraphState, SentenceTransformers, TTSInput, FormData
+from utils import build_lang_graph, build_assessment_lang_graph, store_user_data, create_faiss_db_from_document
 from fastapi import FastAPI, UploadFile, HTTPException, File
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
@@ -91,6 +91,32 @@ async def chat(state: GraphState):
     except Exception as e:
         logger.error(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
+
+@app.post('/assess')
+async def assessment(state: GraphState):
+    """
+    Retrieves the query information from the User's message.
+    This endpoint is run when the user clicks send, thereby sending the message to this endpoint.
+    """
+
+    app = build_assessment_lang_graph()
+    result = app.invoke(state)
+
+    try:
+        if result["messages"]:
+            reply = result["messages"][-1].content  # Assuming the structure is correct
+            logger.info("Reply message relayed")
+            logger.info(f"reply: {reply}")
+            return {"reply": reply}  # Returning a structured JSON response
+        else:
+            logger.warning("No response generated")
+            return {"reply": "No response generated."}  # Return default message if no messages
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
         
     
 
@@ -167,3 +193,30 @@ async def store_user_audio(audio: UploadFile=File(...)):
         print("Exception occurred:", e)
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+
+
+@app.post("/submit-form")
+async def submit_form(form: FormData):
+    try:
+        # Create a Python file with the form data
+        file_name = f"assessment_form.py"  # Use the name from the form as part of the filename
+        file_path = storage_path / file_name
+
+        # Create a Python file that contains the form data
+        with open(file_path, "w") as f:
+            f.write('assement_context = """\n')
+            f.write("# Over the past 2 weeks.\n")
+            f.write(f"I have been feeling nervous, anxious = '{form.anxietyGroup}'.\n")
+            f.write(f"Little interest or pleasure in doing things = '{form.depressionGroup}'.\n")
+            f.write(f"I have been upset because of something that happened unexpectedly = '{form.stressGroup}'.\n")
+            f.write(f"difficulty concentrating on what people say to me = '{form.adhdGroup}'.\n")
+            f.write('"""')
+
+        print("####################")
+        print("assessment_form saved")
+
+        # Return the Python file to the client for download
+        return FileResponse(file_path, media_type="application/octet-stream", filename=file_name)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating file: {str(e)}")

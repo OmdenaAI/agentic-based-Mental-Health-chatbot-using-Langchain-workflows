@@ -15,7 +15,6 @@ faiss-cpu = "1.8.0"
 langchain-google-genai = "*"
 pandas = "*"
 kagglehub = "*"
-langchain-huggingface = "*"
 numpy = "<2.0"
 torch = "*"
 kokoro = "*"
@@ -24,6 +23,7 @@ openai-whisper = {git = "https://github.com/openai/whisper.git"}
 ffmpeg-python = "*"
 gtts = "*"
 python-multipart = "*"
+langchain-huggingface = "*"
 
 [dev-packages]
 ipykernel = "*"
