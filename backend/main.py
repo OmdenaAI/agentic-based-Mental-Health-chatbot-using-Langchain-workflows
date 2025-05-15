@@ -25,6 +25,7 @@ import tempfile
 import whisper
 import io
 import numpy as np
+import json
 
 
 
@@ -46,24 +47,14 @@ storage_path =Path(os.getcwd()) / 'storage'
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins= ["*"], #["http://localhost:5173"],  # Frontend url. You can replace the current URL with your frontend URL 
+    allow_origins= ["http://localhost:5173"],  # Frontend url. You can replace the current URL with your frontend URL 
     allow_credentials=True,
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
 
 
-@app.post("/store/user")
-async def store_user_info(state: GraphState) -> list:
-    """
-    Handles a POST request to stores user data in a JSON file,
-    and returns the complete list of all user records.
 
-    This function ensures that user information is persisted between sessions
-    by saving User's info into a JSON file (`user.json`). If the file
-    doesn't exist, it will be created.
-    """
-    return store_user_data(state)
 
 
 
@@ -76,8 +67,12 @@ async def chat(state: GraphState):
 
     logger.info(f"state from user: {state}")
 
+    print(f'state: {state}')
+
     app = build_lang_graph()
     result = app.invoke(state)
+    
+    print(f'result: {result}')
 
     try:
         if result["messages"]:
@@ -94,28 +89,28 @@ async def chat(state: GraphState):
     
 
 
-@app.post('/assess')
-async def assessment(state: GraphState):
-    """
-    Retrieves the query information from the User's message.
-    This endpoint is run when the user clicks send, thereby sending the message to this endpoint.
-    """
+# @app.post('/assess')
+# async def assessment(state: GraphState):
+#     """
+#     Retrieves the query information from the User's message.
+#     This endpoint is run when the user clicks send, thereby sending the message to this endpoint.
+#     """
 
-    app = build_assessment_lang_graph()
-    result = app.invoke(state)
+#     app = build_assessment_lang_graph()
+#     result = app.invoke(state)
 
-    try:
-        if result["messages"]:
-            reply = result["messages"][-1].content  # Assuming the structure is correct
-            logger.info("Reply message relayed")
-            logger.info(f"reply: {reply}")
-            return {"reply": reply}  # Returning a structured JSON response
-        else:
-            logger.warning("No response generated")
-            return {"reply": "No response generated."}  # Return default message if no messages
-    except Exception as e:
-        logger.error(f"Error: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+#     try:
+#         if result["messages"]:
+#             reply = result["messages"][-1].content  # Assuming the structure is correct
+#             logger.info("Reply message relayed")
+#             logger.info(f"reply: {reply}")
+#             return {"reply": reply}  # Returning a structured JSON response
+#         else:
+#             logger.warning("No response generated")
+#             return {"reply": "No response generated."}  # Return default message if no messages
+#     except Exception as e:
+#         logger.error(f"Error: {e}")
+#         raise HTTPException(status_code=500, detail="Internal Server Error")
 
         
     
@@ -195,28 +190,72 @@ async def store_user_audio(audio: UploadFile=File(...)):
 
 
 
-@app.post("/submit-form")
+@app.post("/store/assessment")
 async def submit_form(form: FormData):
+
+    """
+        This retrieves the user's assessment form, stores the data in json file, 
+        loads the json file as state for llm to generate assessment response
+    """
+        
+
+    # Create a Python file with the form data
+    file_name = f"assessment_form.json"  # Use the name from the form as part of the filename
+    file_path = storage_path / file_name
+
+    created_dict = {} # create empty dictionary to serve as GraphState
+
+    # update the dictionary with info 
+    created_dict["messages"] = []
+    created_dict["query"] = f""" Over the past 2 weeks, I have been feeling nervous, anxious, and on the edge = {form.anxietyGroup}.
+                                Over the past 2 weeks, I have Little interest or pleasure in doing things = {form.depressionGroup}.
+                                Over the past 2 weeks, I have been upset because of something that happened unexpectedly {form.stressGroup}.
+                                Over the past 2 weeks, I have difficulty getting things in order when I have to do a task that requires organization {form.adhdGroup}"""
+    created_dict["docs"] = []
+    created_dict["next"] = ""
+    # Create a Python file that contains the form data
+    with open(file_path, "w") as f:
+        json.dump(created_dict, f, indent=4)
+
+    print("####################")
+    print("assessment_form saved")
+
+   
+    
+    # generated_state = json.load(str(file_path))
+
+    app = build_assessment_lang_graph()
+    result = app.invoke(created_dict)
+
     try:
-        # Create a Python file with the form data
-        file_name = f"assessment_form.py"  # Use the name from the form as part of the filename
-        file_path = storage_path / file_name
-
-        # Create a Python file that contains the form data
-        with open(file_path, "w") as f:
-            f.write('assement_context = """\n')
-            f.write("# Over the past 2 weeks.\n")
-            f.write(f"I have been feeling nervous, anxious = '{form.anxietyGroup}'.\n")
-            f.write(f"Little interest or pleasure in doing things = '{form.depressionGroup}'.\n")
-            f.write(f"I have been upset because of something that happened unexpectedly = '{form.stressGroup}'.\n")
-            f.write(f"difficulty concentrating on what people say to me = '{form.adhdGroup}'.\n")
-            f.write('"""')
-
-        print("####################")
-        print("assessment_form saved")
-
-        # Return the Python file to the client for download
-        return FileResponse(file_path, media_type="application/octet-stream", filename=file_name)
+        if result["messages"]:
+            reply = result["messages"][-1].content  # Assuming the structure is correct
+            logger.info("Reply message relayed")
+            logger.info(f"reply: {reply}")
+            return {"reply": reply}  # Returning a structured JSON response
+        else:
+            logger.warning("No response generated")
+            return {"reply": "No response generated."}  # Return default message if no messages
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating file: {str(e)}")
+    
+
+
+@app.post('/store/onboarding')
+async def store_user_info(user_info:dict) -> List:
+    """
+    Handles a POST request to stores user data in a JSON file,
+    and returns the complete list of all user records.
+
+    This function ensures that user information is persisted between sessions
+    by saving User's info into a JSON file (`user.json`). If the file
+    doesn't exist, it will be created.
+    """
+    return store_user_data(user_info)
+
+
+

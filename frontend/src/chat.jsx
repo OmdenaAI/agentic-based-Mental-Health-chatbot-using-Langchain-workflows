@@ -4,10 +4,11 @@ import { LuAudioLines } from "react-icons/lu";
 import { FaStopCircle } from "react-icons/fa";
 import { FaCircleStop, FaMicrophone } from "react-icons/fa6";
 import { v4 as uuidv4 } from "uuid";
+import { ThreeDot } from "react-loading-indicators";
 
 // import ReactAudioPlayer from 'react-audio-player';
 
-function Chat() {
+function Chat({ assessEval }) {
   const now = new Date();
   const hour = now.getHours();
   const minutes = now.getMinutes();
@@ -15,11 +16,22 @@ function Chat() {
   const [messages, setMessages] = useState([
     {
       id: uuidv4(),
-      text: "Hi there! I'm GreenLife. How may I help your mental health?",
+      text: assessEval,
       sender: "bot",
       timestamp: `${hour}:${minutes}`,
     },
   ]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: uuidv4(),
+        text: assessEval,
+        sender: "bot",
+        timestamp: `${hour}:${minutes}`,
+      },
+    ]);
+  }, [assessEval]);
 
   // state variable to store input from the User
   const [input, setInput] = useState("");
@@ -102,29 +114,28 @@ function Chat() {
           ]); // updating all messages
 
           setUploadStatus("Upload successful!");
-          console.log("Server response:", data);
+       
 
           // use the text_from_audio to generate a text response from the llm
-          const text_audio_llm_message = await fetch("http://localhost:8000/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              messages: [],
-              age: 50,
-              emotion: "stress",
-              gender: "female",
-              language: "english",
-              query: data.text_from_audio,
-              docs: [],
-              next: "string",
-            }),
-          });
-      
+          const text_audio_llm_message = await fetch(
+            "http://localhost:8000/chat",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                messages: [],
+                query: data.text_from_audio,
+                docs: [],
+                next: "string",
+              }),
+            }
+          );
+
           // retrieve bot response
           const getting_message = await text_audio_llm_message.json();
-      
+
           // Update state of messages with llm_response
           const message_text_audio_format = {
             id: uuidv4(),
@@ -132,17 +143,16 @@ function Chat() {
             sender: "bot",
             timestamp: `${hour}:${minutes}`,
           };
-          setMessages((prevMessages) => [...prevMessages, message_text_audio_format]);
-      
-
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            message_text_audio_format,
+          ]);
         } catch (err) {
           setUploadStatus("Upload failed.");
-          console.error("Upload error:", err);
         }
       };
       mediaRecorder.current.start();
     } catch (err) {
-      console.error("Error starting recording:", err);
       setIsRecording(false);
     }
   };
@@ -170,13 +180,6 @@ function Chat() {
     }
     */
     setVoiceEnabled((prev) => !prev);
-    if (!voiceEnabled) {
-      // Start voice control logic here
-      console.log("Voice control enabled");
-    } else {
-      // Stop voice control logic here
-      console.log("Voice control disabled");
-    }
   };
 
   const handleAudioButtonClick = async (e) => {
@@ -190,8 +193,6 @@ function Chat() {
     // set send button to true to identify that a message was sent to the backend
 
     const divText = e.target.closest("div").textContent;
-    console.log(divText);
-
     const audio_id = await fetch("http://localhost:8000/tts", {
       method: "POST",
       headers: {
@@ -203,11 +204,9 @@ function Chat() {
     });
 
     const filename = await audio_id.json();
-    console.log("filename_id", filename.id);
-
+  
     // if filename exists then retrieve the audio_filename property, which is the filename of the audio file
     if (filename) {
-      console.log("Yes filename");
       new Audio(`http://localhost:8000/storage/${filename.id}.wav`).play();
     }
   };
@@ -239,10 +238,6 @@ function Chat() {
       },
       body: JSON.stringify({
         messages: [],
-        age: 50,
-        emotion: "stress",
-        gender: "female",
-        language: "english",
         query: input,
         docs: [],
         next: "string",
@@ -287,18 +282,35 @@ function Chat() {
             } md:flex md:justify-between`}
           >
             {/* Message Text */}
-            <div className="items-center">
-              <ReactMarkdown>{msg.text}</ReactMarkdown>
-              <span className="cursor-pointer" onClick={handleAudioButtonClick}>
-                <LuAudioLines size={25} />{" "}
-              </span>
-              {/* <span className="cursor-pointer">
+
+            {!assessEval ? (
+              <ThreeDot
+                variant="pulsate"
+                color="#100f15"
+                size="medium"
+                text=""
+                textColor=""
+              />
+            ) : (
+              <div>
+                <div className="items-center">
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  <span
+                    className="cursor-pointer"
+                    onClick={handleAudioButtonClick}
+                  >
+                    <LuAudioLines size={25} />{" "}
+                  </span>
+
+                  {/* <span className="cursor-pointer">
                 <FaStopCircle size={25} />{" "}
               </span> */}
-            </div>
+                </div>
 
-            {/* Timestamp */}
-            <div className="text-xs text-right">{msg.timestamp}</div>
+                {/* Timestamp */}
+                <div className="text-xs text-right">{msg.timestamp}</div>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -341,7 +353,6 @@ function Chat() {
             {/* copied record audio code */}
             <>
               <div className="w-full">
-
                 {/* microphone = off and on */}
                 <div className="flex">
                   <div>
