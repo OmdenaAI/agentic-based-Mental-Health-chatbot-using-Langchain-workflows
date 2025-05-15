@@ -10,7 +10,7 @@ from torch import device
 
 from torch import embedding
 from base_context import base_context
-from storage.assessment_form import assement_context
+from assessment_context import assessment_context
 from langgraph.graph import StateGraph
 
 from langchain_core.messages import AIMessage
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
-def store_user_data(state: GraphState):
+def store_user_data(state: dict):
     """
     Stores user data from the given GraphState into a JSON file.
 
@@ -54,7 +54,7 @@ def store_user_data(state: GraphState):
     os.makedirs(user_info_path, exist_ok=True)
 
     user_file = user_info_path / "user.json"
-    current_user_info = state.model_dump()
+    current_user_info = state
 
     # Load existing data if file exists, otherwise start with empty list
     if user_file.exists():
@@ -251,7 +251,7 @@ def rewrite_reply(state: GraphState, llm:ChatGoogleGenerativeAI) -> GraphState:
     """
 
     previous_reply = state.messages[-1].content
-    prompt = f"Rewrite this reply to be more aligned with the user's emotional state ({state.emotion}): {previous_reply}"
+    prompt = f"Rewrite this reply to be more aligned with the user's query: {previous_reply}"
     try:
         response = llm.invoke(prompt)
         reply = response.content if hasattr(response, "content") else response
@@ -287,15 +287,16 @@ def generate_response(state: GraphState) -> GraphState:
 
     # initialize Prompt
     prompt = (
-        f"User (Age: {state.age}, Gender: {state.gender}): {state.query}\n"
-        f"{base_context}. Generate a response like a message conversation between two friends of at most two sentences based on all the instructions with the information in {state.docs}. Tell them what they are experiencing based on {assement_context}"
+        f"User's query: {state.query}\n"
+        f"{base_context}. Generate a response like a message conversation between two friends of at most two sentences based on all the instructions with the information in {state.docs}."
         f"The response must incorporate relevant suggestions from the retrieved documents, especially from the mental health dataset, when applicable."
     )
 
-    # Add Language capabilities
-    language = state.language
-    if language.lower() != 'english':
-        prompt += f"Translate the final answer to {language}."
+
+    # # Add Language capabilities
+    # language = state.language
+    # if language.lower() != 'english':
+    #     prompt += f"Translate the final answer to {language}."
 
     # invoke llm
     try:
@@ -318,18 +319,18 @@ def generate_response(state: GraphState) -> GraphState:
         raise e  # Re-raise the exception after logging it
 
     # Check if the response contains any relevant terms and update the next key in state based on this
-    if any(term in reply.lower() for term in ["stress", "focus", "overwhelmed, adhd, anxious, anxiety, depression"]):
-        state.next = "END" 
-    else:
-        state.next = "RewriteReply"
+    # if any(term in reply.lower() for term in ["stress", "focus", "overwhelmed, adhd, anxious, anxiety, depression"]):
+    #     state.next = "END" 
+    # else:
+    #     state.next = "RewriteReply"
 
-    # handling rewrite reply
-    if state.next== "END": 
-        return state
+    # # handling rewrite reply
+    # if state.next== "END": 
+    #     return state
     
-    else:
-        state = rewrite_reply(state, llm)
-        return state
+    # else:
+    #     state = rewrite_reply(state, llm)
+    return state
     
 
 
@@ -353,17 +354,11 @@ def generate_assessment_response(state: GraphState) -> GraphState:
     # initialize LLM
     llm = initialize_LLM(google_api_key=GOOGLE_API_KEY)
 
+
     # initialize Prompt
     prompt = (
-        f"Using the information in {assement_context}. Generate a response that tells the user what they are experiencing"
-        f"The user must be experiencing one or more out of the following mental health challenges: Stress, ADHD, Anxiety and or Depression"
-        f"Tell the user something like, Hi there! Based on your assessment, I notice you've been experiencing some anxiety and stress lately. Would you like to talk about what's been on your mind?"
+        f"{assessment_context} Here is the user's data {state.query}."
     )
-
-    # Add Language capabilities
-    language = state.language
-    if language.lower() != 'english':
-        prompt += f"Translate the final answer to {language}."
 
     # invoke llm
     try:
@@ -470,4 +465,4 @@ def build_assessment_lang_graph():
 
 
 
-
+# https://www.linkedin.com/in/feng-zhang-data/

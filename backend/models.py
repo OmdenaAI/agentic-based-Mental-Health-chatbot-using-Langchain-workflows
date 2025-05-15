@@ -84,10 +84,6 @@ class GraphState(BaseModel):
 
     Attributes:
         messages (list): A list of messages as entered by the User that will be processed by the `add_messages` function.
-        age (int): The age of the User interacting with the chatbot.
-        gender (str): The gender of the User.
-        language (Optional[str]): The language of the User. This field is optional and may be `None`.
-        emotion (str): The current emotional state of the User.
         query (str): The User's query or request.
         docs (list): A list of documents relevant to the query.
         next (str): The next action or step in the interaction, e.g., "ask another question", "end conversation".
@@ -98,10 +94,6 @@ class GraphState(BaseModel):
     """
 
     messages: Annotated[list, add_messages] = []
-    age: int = 50
-    emotion: Emotion = Emotion.STRESS
-    gender: Gender = Gender.FEMALE
-    language: str
     query: str 
     docs: list = []
     next: str

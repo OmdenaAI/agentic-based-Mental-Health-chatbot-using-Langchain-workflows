@@ -209,7 +209,7 @@ const Stepper = ({ steps, currentStep }) => (
 
 
 // Main Wizard Component
-const Assessment = () => {
+const Assessment = ({setAssessEval}) => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     anxietyGroup: "",
@@ -226,7 +226,6 @@ const Assessment = () => {
   ];
 
   const handleChange = (e) => {
-    console.log(step);
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -236,58 +235,29 @@ const Assessment = () => {
 
 
   const submitForm = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/submit-form", {
+    const response = await fetch("http://localhost:8000/store/assessment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(form), // Assuming 'form' is the data you want to send
       });
-  
-      // const data = await response.json();
-      // if (response.ok) {
-      //   console.log("Form submitted successfully:", data);
-      // } else {
-      //   console.error("Error in form submission:", data);
-      // }
-    } catch (error) {
-      console.error("Error sending the request:", error);
-    }
+   
+    const assessment_json = await response.json()
+    setAssessEval(assessment_json.reply)
+    
+    
   };
 
 
-  const retrieveAssessment = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/assess", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form), // Assuming 'form' is the data you want to send
-      });
-  
-      // const data = await response.json();
-      // if (response.ok) {
-      //   console.log("Form submitted successfully:", data);
-      // } else {
-      //   console.error("Error in form submission:", data);
-      // }
-    } catch (error) {
-      console.error("Error sending the request:", error);
-    }
-  };
+
+
+
   
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submit submitting");
-    if (step == 6) {
-      alert(JSON.stringify(form, null, 2));
-    } else {
-      alert("Please complete all steps before submitting.");
-    }
     // Submit data to your API here
   };
 
@@ -349,7 +319,7 @@ const Assessment = () => {
             <Link to="/chat">
               <button
                 type="button"
-                onClick={() => {console.log(form, step); submitForm()}}
+                onClick={() => submitForm()}
                 className="ml-auto cursor-pointer text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5"
                
               >

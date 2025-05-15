@@ -240,7 +240,6 @@ const Onboarding = () => {
   ];
 
   const handleChange = (e) => {
-    console.log(step);
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -266,15 +265,15 @@ const Onboarding = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("submit submitting");
-    if (step == 6) {
-      alert(JSON.stringify(form, null, 2));
-    } else {
-      alert("Please complete all steps before submitting.");
-    }
+  const handleSubmit = async () => {
     // Submit data to your API here
+    const user_info_data = await fetch ("http://localhost:8000/store/onboarding", {
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json",
+      },
+      "body": JSON.stringify(form)
+    }) 
   };
 
   return (
@@ -337,9 +336,8 @@ const Onboarding = () => {
             <Link to="/assessmentModal">
               <button
                 type="button"
-                onClick={() => console.log(form, step)}
+                onClick={() => {handleSubmit()}}
                 className="ml-auto cursor-pointer text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5"
-                disabled={step !== 6} // Disable submit until Step 5
               >
                 Submit
               </button>

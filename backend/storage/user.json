@@ -1,12 +1,51 @@
 [
   {
-    "messages": [],
-    "age": 50,
-    "gender": "female",
-    "language": "string",
-    "emotion": "stress",
-    "query": "I am feeling overwhelmed and stressed at work due to working with children which can be naughty at times",
-    "docs": [],
-    "next": "string"
+    "name": "Ayomide",
+    "ageGroup": "25-34",
+    "gender": "Female",
+    "interactionStyle": "Informal",
+    "mentalAreas": [
+      "Stress"
+    ],
+    "privacyConsent": [
+      "I consent to the storage and processing of my data as described in the privacy policy. I understand that MindfulChat is not a replacement for professional mental health services."
+    ]
+  },
+  {
+    "name": "Zion",
+    "ageGroup": "18-24",
+    "gender": "Female",
+    "interactionStyle": "Informal",
+    "mentalAreas": [
+      "Depression",
+      "Anxiety"
+    ],
+    "privacyConsent": [
+      "I consent to the storage and processing of my data as described in the privacy policy. I understand that MindfulChat is not a replacement for professional mental health services."
+    ]
+  },
+  {
+    "name": "Nobody",
+    "ageGroup": "35-44",
+    "gender": "Prefer not to say",
+    "interactionStyle": "Informal",
+    "mentalAreas": [
+      "Depression"
+    ],
+    "privacyConsent": [
+      "I consent to the storage and processing of my data as described in the privacy policy. I understand that MindfulChat is not a replacement for professional mental health services."
+    ]
+  },
+  {
+    "name": "Nobody",
+    "ageGroup": "25-34",
+    "gender": "Male",
+    "interactionStyle": "Informal",
+    "mentalAreas": [
+      "Stress"
+    ],
+    "privacyConsent": [
+      "I consent to the storage and processing of my data as described in the privacy policy. I understand that MindfulChat is not a replacement for professional mental health services."
+    ]
   }
 ]
