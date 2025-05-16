@@ -1,0 +1,29 @@
+#For Indumathy's old POC - vertexai credentials and speech recognition credentials
+#MODEL= "chat-bison"
+#GOOGLE_APPLICATION_CREDENTIALS=""
+#SPEECH_KEY_PATH="
+#GOOGLE_CLOUD_PROJECT=
+
+# === LLM PROVIDERS ===
+# Preferred online fallback - OpenAI
+OPENAI_API_KEY=sk-
+OPENAI_MODEL=gpt-3.5-turbo
+# Optional: for HuggingFace RAG
+HUGGINGFACEHUB_API_TOKEN=hf_
+
+# Optional: for Ollama fallback (offline mode)
+OLLAMA_MODEL=llama3
+
+# ===  VERTEX AI ===
+#GOOGLE_PROJECT_ID=
+#GOOGLE_APPLICATION_CREDENTIALS="
+#VERTEX_LOCATION=us-central1
+
+# === WHATSAPP MCP ===
+WHATSAPP_VERIFY_TOKEN= # This line shows up in app.py so don't forget to change it in app.py
+WHATSAPP_PAGE_TOKEN= # Your long-lived Page Access Token
+WHATSAPP_PHONE_NUMBER_ID=
+WHATSAPP_BUSINESS_ID=
+
+# === OTHER === from Hugging Face (already in your app ✅)
+EMBEDDING_MODEL=all-MiniLM-L6-v2

@@ -1,0 +1,92 @@
+emotion_detection_task:
+  description: >
+    Analyze the user's input: "{user_input}"
+    Identify their primary emotion (e.g., sadness, anxiety, neutral) and provide a short emotional summary.
+  expected_output: >
+    A short emotion label, e.g., "User feels anxious."
+  output_key: emotion_summary
+  agent: emotion_detector
+
+safety_check_task:
+  description: >
+    Review the user's message and conversation context.
+    Determine whether it contains signs of emotional distress or crisis using your mental health knowledge base.
+    Respond in JSON format:
+    {
+      "distress": true/false,
+      "trigger": "quoted text from user input if applicable"
+    }
+  expected_output: >
+    Structured JSON with distress flag and trigger phrase if any.
+  output_key: safety_result
+  agent: safety_agent
+  context:
+    - emotion_detection_task
+
+rag_retrieval_task:
+  description: >
+    Based on the user's emotional state, retrieve concise mental health tips from the corpus.
+  expected_output: >
+    1–2 short tips, e.g., "Take a walk in nature. Try deep breathing exercises."
+  output_key: retrieved_tips
+  agent: rag_retriever
+  context:
+    - emotion_detection_task
+
+rag_reading_task:
+  description: >
+    Summarize the tips retrieved in a helpful and brief tone.
+  expected_output: >
+    A 1-2 line practical summary of the tips.
+  output_key: summarized_tips
+  agent: rag_reader
+  context:
+    - emotion_detection_task
+    - rag_retrieval_task
+
+suggestion_task:
+  description: >
+    Give 1-2 practical, empathetic suggestions based on emotional state and retrieved tips.
+    If appropriate, gently offer further help such as:
+    "Would you like me to walk you through a breathing exercise?" or
+    "Shall I guide you with some mindfulness steps?"
+  expected_output: >
+    1-2 short actionable suggestions (1-2 lines), optionally followed by a gentle offer for guided support.
+    E.g., "Try a short breathing exercise. Take a break from screens. Would you like me to walk you through one?"
+  output_key: suggestions
+  agent: suggestion_agent
+  context:
+    - emotion_detection_task
+    - safety_check_task
+    - rag_retrieval_task
+    - rag_reading_task
+
+orchestrate_task:
+  description: >
+    Respond to: "{user_input}" with an adaptive tone and length.
+    - For greetings or neutral input: be short and friendly.
+    - For moderate emotions (e.g., anxiety, stress): respond with 5-6 concise lines.
+    - For crisis-level input: give a longer, supportive message with clear help suggestions.
+  expected_output: >
+    A concise, human-like response adapted to the emotional tone and urgency.
+  output_key: final_response
+  agent: orchestrator
+  context:
+    - emotion_detection_task
+    - safety_check_task
+    - rag_retrieval_task
+    - rag_reading_task
+    - suggestion_task
+
+profile_feedback_task:
+  description: >
+    You are a mental health assistant. Based on the following user profile summary, provide a short, supportive feedback including potential wellness insights and concerns. If applicable, evaluate risk indicators such as stress, anxiety, or GAD (Generalized Anxiety Disorder) based on the user's background.
+
+    Profile Summary:
+    {user_input}
+  expected_output: >
+    A 4–6 line personalized message containing mental health observations, gentle advice, and if applicable, a risk estimate (e.g., "This profile suggests moderate anxiety. Consider consulting a professional if symptoms persist.").
+  output_key: final_response
+  agent: orchestrator
+
+
