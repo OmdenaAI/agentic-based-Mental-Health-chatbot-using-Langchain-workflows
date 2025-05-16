@@ -174,18 +174,19 @@ ________________________________________________________________________________
 
   🖥️ **Offline Fallback - for 24/7 emotional support in case there's no internet**
     
-    1. Install Ollama locally
+  1. Install Ollama locally
     (a lightweight LLM server that runs on-device)
     
-    2. Pull the model (e.g., LLaMA3)
+  2. Pull the model (e.g., LLaMA3)
+    
     ```
     ollama pull llama3
     ```
     
-    3. Run Ollama locally
+  3. Run Ollama locally
     Ollama listens on http://localhost:11434 — your app connects to it as the LLM provider.
     
-    4. Start the chatbot app locally
+  4. Start the chatbot app locally
     The backend will detect the offline status and route prompts to LLaMA3.
 
  _______________________________________________________________________________________________________
