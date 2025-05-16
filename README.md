@@ -41,6 +41,7 @@ Big **Thank you for Team1's AI engineers** for creating this awesome unified **C
 
 💼 **Business Question**
 # How can AI be used to deliver early-stage mental health interventions that are scalable, emotionally adaptive, and ethically responsible for users in distress — while enabling insights for professionals without breaching trust or privacy?
+[Final Presentation](https://docs.google.com/presentation/d/1_PHWHflFadvB_up3_VSHq8UspKuugyapUzIyGsAe_78/edit?usp=sharing)
 
 
 # 🧠 Mental Health Chatbot (OmdenaBot)
