@@ -179,9 +179,9 @@ ________________________________________________________________________________
     
   2. Pull the model (e.g., LLaMA3)
     
-    ```
-    ollama pull llama3
-    ```
+  ```
+  ollama pull llama3
+  ```
     
   3. Run Ollama locally
     Ollama listens on http://localhost:11434 — your app connects to it as the LLM provider.
