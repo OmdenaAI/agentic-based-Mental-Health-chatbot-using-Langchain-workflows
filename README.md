@@ -62,14 +62,23 @@ This is a full-stack AI-powered mental health assistant built during an Omdena C
 ## 📁 Project Structure
 
 mentalhealth_chatbot/
+
 │
+
 ├── mentalhealth-frontend/ # React frontend
+
 ├── src/ # Backend logic (CrewAI agents, tools, tasks)
+
 ├── logs/ # (Create this folder manually to store logs)
+
 ├── .env # Environment variables (create based on .env.template)
+
 ├── requirements.txt # Python dependencies
+
 ├── pyproject.toml # Poetry or pip build configuration
+
 ├── uv.lock # Rename the file if necessary
+
 └── README.md # This file
 
 
