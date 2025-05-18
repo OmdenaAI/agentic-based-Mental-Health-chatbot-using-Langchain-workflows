@@ -42,7 +42,10 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-mentalhealth_chatbot/temp_audio/
+
+mentalhealth_chatbot/temp_audio/*
+!mentalhealth_chatbot/temp_audio/.gitkeep
+
 
 
 # Coverage and testing
